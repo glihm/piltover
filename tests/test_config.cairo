@@ -1,6 +1,7 @@
 use starknet::ContractAddress;
 
-use snforge_std::{declare, start_prank, stop_prank, CheatTarget, ContractClassTrait};
+use snforge_std as snf;
+use snforge_std::{CheatTarget, ContractClassTrait};
 
 use piltover::config::{
     config_cpt, config_cpt::InternalTrait as ConfigInternal, IConfig, IConfigDispatcherTrait,
@@ -10,7 +11,7 @@ use piltover::config::{
 use super::constants::{OWNER, ZERO_ADDR, BOB, ALICE, CONTRACT_A, CONTRACT_B};
 
 fn deploy_mock() -> IConfigDispatcher {
-    let contract = declare('config_mock');
+    let contract = snf::declare('config_mock');
     let calldata = array![OWNER().into()];
     let contract_address = contract.deploy(@calldata).unwrap();
     IConfigDispatcher { contract_address }
@@ -21,7 +22,7 @@ fn config_set_operator_ok() {
     let mock = deploy_mock();
     assert(mock.get_operator() == ZERO_ADDR(), 'expect 0 addr');
 
-    start_prank(CheatTarget::One(mock.contract_address), OWNER());
+    snf::start_prank(CheatTarget::One(mock.contract_address), OWNER());
 
     mock.set_operator(BOB());
     assert(mock.get_operator() == BOB(), 'expect bob');
@@ -41,7 +42,7 @@ fn config_set_operator_unauthorized() {
 fn config_set_program_info_ok() {
     let mock = deploy_mock();
 
-    start_prank(CheatTarget::One(mock.contract_address), OWNER());
+    snf::start_prank(CheatTarget::One(mock.contract_address), OWNER());
 
     // Owner sets the info.
     mock.set_program_info(0x1, 0x2);
@@ -50,7 +51,7 @@ fn config_set_program_info_ok() {
     mock.set_operator(BOB());
 
     // Bob as operator can also set the program info.
-    start_prank(CheatTarget::One(mock.contract_address), BOB());
+    snf::start_prank(CheatTarget::One(mock.contract_address), BOB());
     mock.set_program_info(0x11, 0x22);
 
     assert(mock.get_program_info() == (0x11, 0x22), 'expect operator hashes');
@@ -62,7 +63,7 @@ fn config_set_program_info_unauthorized() {
     let mock = deploy_mock();
 
     // Bob is not an operator.
-    start_prank(CheatTarget::One(mock.contract_address), BOB());
+    snf::start_prank(CheatTarget::One(mock.contract_address), BOB());
     mock.set_program_info(0x11, 0x22);
 }
 
@@ -70,7 +71,7 @@ fn config_set_program_info_unauthorized() {
 fn config_set_facts_registry_ok() {
     let mock = deploy_mock();
 
-    start_prank(CheatTarget::One(mock.contract_address), OWNER());
+    snf::start_prank(CheatTarget::One(mock.contract_address), OWNER());
 
     // Owner sets the address.
     mock.set_facts_registry(CONTRACT_A());
@@ -79,7 +80,7 @@ fn config_set_facts_registry_ok() {
     mock.set_operator(BOB());
 
     // Bob as operator can also set the program info.
-    start_prank(CheatTarget::One(mock.contract_address), BOB());
+    snf::start_prank(CheatTarget::One(mock.contract_address), BOB());
     mock.set_facts_registry(CONTRACT_B());
 
     assert(mock.get_facts_registry() == CONTRACT_B(), 'expect operator address');
@@ -91,6 +92,6 @@ fn config_set_facts_registry_unauthorized() {
     let mock = deploy_mock();
 
     // Bob is not an operator.
-    start_prank(CheatTarget::One(mock.contract_address), BOB());
+    snf::start_prank(CheatTarget::One(mock.contract_address), BOB());
     mock.set_facts_registry(CONTRACT_A());
 }
