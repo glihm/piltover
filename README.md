@@ -70,4 +70,3 @@ super::...;
 ```
 
 * Document functions inside the trait, and add details if needed in the implementation.
-

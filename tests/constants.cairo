@@ -2,26 +2,26 @@
 //!
 use starknet::ContractAddress;
 
-fn ZERO_ADDR() -> ContractAddress {
+fn zero_addr() -> ContractAddress {
     starknet::contract_address_const::<0>()
 }
 
-fn CONTRACT_A() -> ContractAddress {
+fn contract_a() -> ContractAddress {
     starknet::contract_address_const::<'CONTRACT_A'>()
 }
 
-fn CONTRACT_B() -> ContractAddress {
+fn contract_b() -> ContractAddress {
     starknet::contract_address_const::<'CONTRACT_B'>()
 }
 
-fn OWNER() -> ContractAddress {
+fn owner() -> ContractAddress {
     starknet::contract_address_const::<'OWNER'>()
 }
 
-fn BOB() -> ContractAddress {
+fn bob() -> ContractAddress {
     starknet::contract_address_const::<'BOB'>()
 }
 
-fn ALICE() -> ContractAddress {
+fn alice() -> ContractAddress {
     starknet::contract_address_const::<'ALICE'>()
 }
