@@ -15,12 +15,12 @@ mod errors {
 mod config_cpt {
     use starknet::ContractAddress;
 
-    use piltover::config::interface::IConfig;
-
     use openzeppelin::access::ownable::{
         OwnableComponent as ownable_cpt, OwnableComponent::InternalTrait as OwnableInternal,
         interface::IOwnable,
     };
+
+    use piltover::config::interface::IConfig;
 
     use super::errors;
 
