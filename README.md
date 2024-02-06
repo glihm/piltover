@@ -24,6 +24,8 @@ Due to a limitation of `starknet foundry`, we can't declare a contract that is d
 
 * `config`: base configuration for the core contract.
 
+* `messaging`: messaging between Appchain - Starknet.
+
 ## Build
 
 To build the project, run:
