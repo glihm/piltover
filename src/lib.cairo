@@ -13,4 +13,3 @@ mod config {
     use mock::config_mock;
 }
 
-mod mock;
