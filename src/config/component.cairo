@@ -17,7 +17,10 @@ mod config_cpt {
 
     use piltover::config::interface::IConfig;
 
-    use openzeppelin::access::ownable::{OwnableComponent as ownable_cpt, OwnableComponent::InternalTrait as OwnableInternal, interface::IOwnable,};
+    use openzeppelin::access::ownable::{
+        OwnableComponent as ownable_cpt, OwnableComponent::InternalTrait as OwnableInternal,
+        interface::IOwnable,
+    };
 
     use super::errors;
 

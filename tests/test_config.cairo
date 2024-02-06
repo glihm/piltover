@@ -2,7 +2,10 @@ use starknet::ContractAddress;
 
 use snforge_std::{declare, start_prank, stop_prank, CheatTarget, ContractClassTrait};
 
-use piltover::config::{config_cpt, config_cpt::InternalTrait as ConfigInternal, IConfig, IConfigDispatcherTrait, IConfigDispatcher, config_mock};
+use piltover::config::{
+    config_cpt, config_cpt::InternalTrait as ConfigInternal, IConfig, IConfigDispatcherTrait,
+    IConfigDispatcher, config_mock
+};
 
 use super::constants::{OWNER, ZERO_ADDR, BOB, ALICE, CONTRACT_A, CONTRACT_B};
 
