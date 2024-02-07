@@ -16,6 +16,7 @@ mod messaging {
     mod component;
     mod interface;
     mod mock;
+    mod output_process;
 
     use component::messaging_cpt;
     use interface::{IMessaging, IMessagingDispatcher, IMessagingDispatcherTrait};
