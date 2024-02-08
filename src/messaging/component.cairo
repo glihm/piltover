@@ -296,6 +296,8 @@ mod messaging_cpt {
         }
 
         /// Processes the messages to Starknet from StarknetOS output.
+        /// Once processed, messages are ready to be consumed using
+        /// `consume_message_from_appchain` entry point.
         ///
         /// # Arguments
         ///

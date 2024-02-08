@@ -400,3 +400,42 @@ fn process_messages_to_appchain_no_seal() {
 
     mock.process_messages_to_appchain(messages);
 }
+
+#[test]
+fn consume_message_from_appchain_ok() {
+    let mut mock = mock_state_testing();
+
+    let from = c::contract_a();
+    let to = starknet::get_contract_address();
+    let payload = array![1, 2, 3].span();
+
+    let message_hash = hash::compute_message_hash_appc_to_sn(from, to, payload);
+
+    let messages = array![MessageToStarknet {
+        from_address: from,
+        to_address: to,
+        payload,
+    }].span();
+
+    mock.process_messages_to_starknet(messages);
+
+    // Ensure the caller address inside the mock function is correctly set.
+    snf::start_prank(CheatTarget::One(to), to);
+    mock.consume_message_from_appchain(from, payload);
+}
+
+#[test]
+#[should_panic(expected: ('INVALID_MESSAGE_TO_CONSUME',))]
+fn consume_message_from_appchain_invalid_to_consume() {
+    let mut mock = mock_state_testing();
+
+    let from = c::contract_a();
+    let to = starknet::get_contract_address();
+    let payload = array![1, 2, 3].span();
+
+    // Don't process the messages to starknet.
+
+    // Ensure the caller address inside the mock function is correctly set.
+    snf::start_prank(CheatTarget::One(to), to);
+    mock.consume_message_from_appchain(from, payload);
+}
