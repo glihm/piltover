@@ -301,8 +301,7 @@ mod messaging_cpt {
         ///
         /// * `messages` - The messages to Starknet.
         fn process_messages_to_starknet(
-            ref self: ComponentState<TContractState>,
-            messages: Span<MessageToStarknet>,
+            ref self: ComponentState<TContractState>, messages: Span<MessageToStarknet>,
         ) {
             let mut messages = messages;
 
@@ -331,8 +330,7 @@ mod messaging_cpt {
         ///
         /// * `messages` - The messages to Appchain.
         fn process_messages_to_appchain(
-            ref self: ComponentState<TContractState>,
-            messages: Span<MessageToAppchain>,
+            ref self: ComponentState<TContractState>, messages: Span<MessageToAppchain>,
         ) {
             let mut messages = messages;
 
@@ -345,7 +343,9 @@ mod messaging_cpt {
                         let selector = *m.selector;
                         let nonce = *m.nonce;
 
-                        let message_hash = hash::compute_message_hash_sn_to_appc(nonce, to, selector, payload);
+                        let message_hash = hash::compute_message_hash_sn_to_appc(
+                            nonce, to, selector, payload
+                        );
                         assert(
                             self.sn_to_appc_messages.read(message_hash).is_non_zero(),
                             errors::INVALID_MESSAGE_TO_SEAL
