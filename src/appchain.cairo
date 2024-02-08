@@ -5,8 +5,7 @@
 mod errors {
     const INVALID_ADDRESS: felt252 = 'Config: invalid address';
     const SNOS_INVALID_PROGRAM_OUTPUT_SIZE: felt252 = 'snos: invalid output size';
-    const SNOS_INVALID_MESSAGE_SEGMENT_STARKNET: felt252 = 'snos: invalid starknet msg seg';
-    const SNOS_INVALID_MESSAGE_SEGMENT_APPCHAIN: felt252 = 'snos: invalid appchain msg seg';
+    const SNOS_INVALID_MESSAGES_SEGMENTS: felt252 = 'snos: invalid messages segments';
 }
 
 /// Appchain settlement contract on starknet.
@@ -16,6 +15,7 @@ mod appchain {
     use piltover::config::{config_cpt, config_cpt::InternalTrait as ConfigInternal, IConfig};
     use piltover::messaging::{
         messaging_cpt, messaging_cpt::InternalTrait as MessagingInternal, IMessaging,
+        output_process,
         output_process::{MessageToStarknet, MessageToAppchain},
     };
     use starknet::ContractAddress;
@@ -90,23 +90,11 @@ mod appchain {
         // TODO: We should update SNOS output to have the messages count
         // instead of the messages segment len.
 
-        // Messages to starknet.
-        let mut segment = program_output.slice(offset, program_output.len() - offset);
-        let message_to_starknet_segment_len: usize = (*segment[0])
-            .try_into()
-            .expect(errors::SNOS_INVALID_MESSAGE_SEGMENT_STARKNET);
+        let mut messages_segments = program_output.slice(offset, program_output.len() - offset);
 
-        let messages: Span<MessageToStarknet> = Serde::deserialize(ref segment)
-            .expect(errors::SNOS_INVALID_MESSAGE_SEGMENT_STARKNET);
-        self.messaging.process_messages_to_starknet(messages);
+        let (messages_to_starknet, messages_to_appchain) = output_process::gather_messages_from_output(messages_segments);
 
-        offset += message_to_starknet_segment_len;
-
-        // Messages to appchain.
-        let mut segment = program_output.slice(offset, program_output.len() - offset);
-
-        let messages: Span<MessageToAppchain> = Serde::deserialize(ref segment)
-            .expect(errors::SNOS_INVALID_MESSAGE_SEGMENT_APPCHAIN);
-        self.messaging.process_messages_to_appchain(messages);
+        self.messaging.process_messages_to_starknet(messages_to_starknet);
+        self.messaging.process_messages_to_appchain(messages_to_appchain);
     }
 }

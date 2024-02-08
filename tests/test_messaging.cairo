@@ -5,7 +5,7 @@ use piltover::messaging::{
         Event, MessageSent, MessageCancellationStarted, MessageCanceled, MessageToStarknetReceived,
         MessageToAppchainSealed,
     },
-    output_process::{MessageToStarknet, MessageToAppchain}, hash,
+    output_process::{MessageToStarknet, MessageToAppchain}, hash, output_process,
 };
 use snforge_std as snf;
 use snforge_std::{
@@ -71,6 +71,42 @@ fn get_message_to_appchain() -> MessageToAppchain {
         .span();
 
     Serde::deserialize(ref felts).unwrap()
+}
+
+/// Messages segments of SNOS output from mainnet:
+/// <https://etherscan.io/tx/0xc1351dac330d1d66f98efc99d08d360c2e9bc3d772c09d228027fcded8f02458>.
+fn get_messages_segments() -> Span<felt252> {
+    array![
+        // Header
+        // 2308509181970242579758367820250590423941246005755407149765148974993919671160,
+        // 1400208033537979038273563301858781654076731580449174584651309975875760580865,
+        // 535683,
+        // 2885081770536693045243577840233106668867645710434679941076039698247255604327,
+        // 2590421891839256512113614983194993186457498815986333310670788206383913888162,
+
+        // message to l1 (starknet in this context).
+        7,
+        3256441166037631918262930812410838598500200462657642943867372734773841898370,
+        993696174272377493693496825928908586134624850969,
+        4,
+        0,
+        917360325178274450223200079540424150242461675748,
+        300000000000000,
+        0,
+
+        // message to l2 (appchain in this context).
+        8,
+        993696174272377493693496825928908586134624850969,
+        3256441166037631918262930812410838598500200462657642943867372734773841898370,
+        1629170,
+        1285101517810983806491589552491143496277809242732141897358598292095611420389,
+        3,
+        1905350129216923298156817020930524704572804705313566176282348575247442538663,
+        100000000000000000,
+        0,
+
+    ]
+        .span()
 }
 
 #[test]
@@ -298,6 +334,15 @@ fn cancel_message_cancellation_not_allowed_yet() {
 
     snf::start_warp(CheatTarget::One(mock.contract_address), 5);
     mock.cancel_message(to, selector, payload.span(), nonce);
+}
+
+#[test]
+fn gather_messages_from_output_ok() {
+    let felts = get_messages_segments();
+    let (messages_to_starknet, messages_to_appchain) = output_process::gather_messages_from_output(felts);
+
+    assert(messages_to_starknet.len() == 1, 'missing msgs to sn');
+    assert(messages_to_appchain.len() == 1, 'missing msgs to appc');
 }
 
 #[test]
