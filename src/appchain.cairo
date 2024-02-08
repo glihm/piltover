@@ -11,7 +11,9 @@ mod errors {
 mod appchain {
     use openzeppelin::access::ownable::{OwnableComponent as ownable_cpt, interface::IOwnable};
     use piltover::config::{config_cpt, config_cpt::InternalTrait as ConfigInternal, IConfig};
-    use piltover::messaging::{messaging_cpt, messaging_cpt::InternalTrait as MessagingInternal, IMessaging};
+    use piltover::messaging::{
+        messaging_cpt, messaging_cpt::InternalTrait as MessagingInternal, IMessaging
+    };
     use starknet::ContractAddress;
 
     component!(path: ownable_cpt, storage: ownable, event: OwnableEvent);

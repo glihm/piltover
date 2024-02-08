@@ -14,6 +14,7 @@ mod config {
 
 mod messaging {
     mod component;
+    mod hash;
     mod interface;
     mod mock;
     mod output_process;
